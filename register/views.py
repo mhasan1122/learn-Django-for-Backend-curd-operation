@@ -25,13 +25,21 @@ def error_response(message="Error", data=None, status_code=status.HTTP_400_BAD_R
 @api_view(['GET'])
 def apiOverview(request):
     urls = {
+        'Create': '/registration-create/',
         'List': '/registration-list/',
         'Detail View': '/registration-detail/<int:pk>/',
-        'Create': '/registration-create/',
         'Update': '/registration-update/<int:pk>/',
         'Delete': '/registration-delete/<int:pk>/',
     }
     return success_response("API Overview", urls)
+
+@api_view(['POST'])
+def registrationCreate(request):
+    serializer = RegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return success_response("Registration created successfully", serializer.data)
+    return error_response("Validation failed", serializer.errors)
 
 
 @api_view(['GET'])
@@ -48,13 +56,7 @@ def registrationDetail(request, pk):
     return success_response("Registration details retrieved", serializer.data)
 
 
-@api_view(['POST'])
-def registrationCreate(request):
-    serializer = RegistrationSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return success_response("Registration created successfully", serializer.data)
-    return error_response("Validation failed", serializer.errors)
+
 
 
 @api_view(['PUT'])
